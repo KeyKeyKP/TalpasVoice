@@ -10,6 +10,7 @@ import { EMPLOYEES } from "./config/employees";
 dotenv.config({ path: require("path").join(__dirname, "../../.env") });
 
 const app = express();
+app.set('trust proxy', 1);
 const PORT = process.env.PORT || 3001;
 
 // CORS
