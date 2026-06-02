@@ -1,0 +1,17 @@
+export const EMPLOYEES: string[] = [
+  "Boris Goričanec",
+  "Borut Krejačič",
+  "Damir Burnać",
+  "Davor Vivoda",
+  "Katarina Kremžar",
+  "Klemen Kladnik",
+  "Leo Zornada",
+  "Marko Brezec",
+  "Mateja Novak",
+  "Matjaž Hmeljak",
+  "Milorad Herceg",
+  "Mojca Lorber",
+  "Nikolina Janković",
+  "Sanja Vujmilovič",
+  "Sebastjan Lahajnar",
+];
