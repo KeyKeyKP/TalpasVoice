@@ -50,7 +50,6 @@ interface AutocompleteInputProps {
   onChange: (v: string) => void;
   placeholder?: string;
   className?: string;
-  required?: boolean;
 }
 
 function AutocompleteInput({
@@ -59,7 +58,6 @@ function AutocompleteInput({
   onChange,
   placeholder,
   className = "",
-  required,
 }: AutocompleteInputProps) {
   const [open, setOpen] = useState(false);
   const [inputVal, setInputVal] = useState(value);
@@ -95,10 +93,7 @@ function AutocompleteInput({
         }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder}
-        required={required}
-        className={`input-field text-sm py-1.5 px-2 ${className} ${
-          required && !inputVal ? "border-red-500" : ""
-        }`}
+        className={`input-field text-sm py-1.5 px-2 ${className}`}
       />
       {open && filtered.length > 0 && inputVal && (
         <ul className="absolute z-50 top-full left-0 right-0 mt-1 bg-slate-800 border border-slate-600 rounded-lg shadow-xl max-h-40 overflow-y-auto">
@@ -150,18 +145,18 @@ export function DataTable({
           <thead>
             <tr className="bg-slate-800 border-b border-slate-700">
               {[
-                { label: "Opis dela *", w: "w-36" },
-                { label: "STRANKA *", w: "w-36" },
-                { label: "Kontakt", w: "w-28" },
-                { label: "Vrsta prijave", w: "w-32" },
-                { label: "Datum *", w: "w-28" },
-                { label: "Ur *", w: "w-20" },
-                { label: "Obisk", w: "w-20" },
-                { label: "Os. podatki", w: "w-24" },
-                { label: "Podroben opis", w: "w-44" },
-                { label: "Opravil *", w: "w-32" },
-                { label: "Vrsta el.", w: "w-24" },
-                { label: "Pot", w: "w-20" },
+                { label: "Opis dela", w: "min-w-[200px]" },
+                { label: "STRANKA", w: "min-w-[200px]" },
+                { label: "Kontakt", w: "min-w-[150px]" },
+                { label: "Vrsta prijave", w: "min-w-[160px]" },
+                { label: "Datum", w: "min-w-[110px]" },
+                { label: "Ur", w: "min-w-[80px]" },
+                { label: "Obisk", w: "min-w-[80px]" },
+                { label: "Os. podatki", w: "min-w-[110px]" },
+                { label: "Podroben opis", w: "min-w-[300px]" },
+                { label: "Opravil", w: "min-w-[150px]" },
+                { label: "Vrsta el.", w: "min-w-[120px]" },
+                { label: "Pot", w: "min-w-[100px]" },
                 { label: "", w: "w-10" },
               ].map((col) => (
                 <th
@@ -181,14 +176,14 @@ export function DataTable({
                   idx % 2 === 0 ? "bg-slate-900" : "bg-slate-900/60"
                 } hover:bg-slate-800/50 transition-colors`}
               >
-                {/* Opis dela */}
+                {/* Opis dela/}
                 <td className="px-3 py-2">
                   <input
                     type="text"
                     value={entry.opis_dela}
                     onChange={(e) => updateEntry(entry.id, "opis_dela", e.target.value)}
                     placeholder="Kratek opis"
-                    className={`input-field text-sm py-1.5 px-2 ${!entry.opis_dela ? "border-red-500/60" : ""}`}
+                    className="input-field text-sm py-1.5 px-2"
                   />
                 </td>
                 {/* STRANKA */}
@@ -198,7 +193,6 @@ export function DataTable({
                     suggestions={clients}
                     onChange={(v) => updateEntry(entry.id, "stranka", v)}
                     placeholder="Ime stranke"
-                    required
                   />
                 </td>
                 {/* Kontakt */}
@@ -228,17 +222,17 @@ export function DataTable({
                     ))}
                   </select>
                 </td>
-                {/* Datum */}
+                {/* Datum/}
                 <td className="px-3 py-2">
                   <input
                     type="text"
                     value={entry.datum}
                     onChange={(e) => updateEntry(entry.id, "datum", e.target.value)}
                     placeholder="DD.MM.YYYY"
-                    className={`input-field text-sm py-1.5 px-2 font-mono ${!entry.datum ? "border-red-500/60" : ""}`}
+                    className="input-field text-sm py-1.5 px-2 font-mono"
                   />
                 </td>
-                {/* Število ur */}
+                {/* Število ur/}
                 <td className="px-3 py-2">
                   <select
                     value={entry.stevilo_ur ?? ""}
@@ -249,9 +243,7 @@ export function DataTable({
                         e.target.value ? parseFloat(e.target.value) : null
                       )
                     }
-                    className={`input-field text-sm py-1.5 px-2 ${
-                      entry.stevilo_ur === null ? "border-red-500/60" : ""
-                    }`}
+                    className="input-field text-sm py-1.5 px-2"
                   >
                     <option value="">—</option>
                     {HOUR_OPTIONS.map((h) => (
@@ -301,14 +293,14 @@ export function DataTable({
                     className="input-field text-sm py-1.5 px-2"
                   />
                 </td>
-                {/* Opravil */}
+                {/* Opravil/}
                 <td className="px-3 py-2">
                   <select
                     value={entry.opravil}
                     onChange={(e) =>
                       updateEntry(entry.id, "opravil", e.target.value)
                     }
-                    className={`input-field text-sm py-1.5 px-2 ${!entry.opravil ? "border-red-500/60" : ""}`}
+                    className="input-field text-sm py-1.5 px-2"
                   >
                     <option value="">— Izberi —</option>
                     {employees.map((emp) => (
@@ -370,7 +362,7 @@ export function DataTable({
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
-                <label className="block text-xs text-slate-400 mb-1">Opis dela *</label>
+                <label className="block text-xs text-slate-400 mb-1">Opis dela</label>
                 <input
                   type="text"
                   value={entry.opis_dela}
@@ -380,13 +372,12 @@ export function DataTable({
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-xs text-slate-400 mb-1">STRANKA *</label>
+                <label className="block text-xs text-slate-400 mb-1">STRANKA</label>
                 <AutocompleteInput
                   value={entry.stranka}
                   suggestions={clients}
                   onChange={(v) => updateEntry(entry.id, "stranka", v)}
                   placeholder="Ime stranke"
-                  required
                 />
               </div>
               <div>
@@ -416,7 +407,7 @@ export function DataTable({
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">Datum *</label>
+                <label className="block text-xs text-slate-400 mb-1">Datum</label>
                 <input
                   type="text"
                   value={entry.datum}
@@ -426,7 +417,7 @@ export function DataTable({
                 />
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">Število ur *</label>
+                <label className="block text-xs text-slate-400 mb-1">Število ur</label>
                 <select
                   value={entry.stevilo_ur ?? ""}
                   onChange={(e) =>
@@ -475,7 +466,7 @@ export function DataTable({
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-slate-400 mb-1">Opravil *</label>
+                <label className="block text-xs text-slate-400 mb-1">Opravil</label>
                 <select
                   value={entry.opravil}
                   onChange={(e) => updateEntry(entry.id, "opravil", e.target.value)}

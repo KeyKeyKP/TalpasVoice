@@ -107,17 +107,6 @@ export default function App() {
   };
 
   const handleExport = async () => {
-    // Validate required fields
-    const invalid = entries.filter(
-      (e) => !e.stranka || !e.opis_dela || !e.datum || !e.opravil || e.stevilo_ur === null
-    );
-    if (invalid.length > 0) {
-      toast.error(
-        `${invalid.length} vnos${invalid.length === 1 ? " ima" : "i imajo"} nepopolne obvezne podatke (STRANKA, Opis dela, Datum, Število ur, Opravil)`
-      );
-      return;
-    }
-
     setIsExporting(true);
     const toastId = toast.loading("Generiranje Excel datoteke...");
 
@@ -181,7 +170,7 @@ export default function App() {
         </div>
 
         {/* Step content */}
-        <div className="card max-w-3xl mx-auto">
+        <div className={step === "review" ? "card w-full" : "card max-w-3xl mx-auto"}>
           {/* === STEP 1: Recording === */}
           {step === "record" && (
             <div>
@@ -264,7 +253,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={handleExport}
-                    disabled={isExporting || entries.length === 0}
+                    disabled={isExporting}
                     className="btn-success flex items-center gap-2"
                   >
                     {isExporting ? (

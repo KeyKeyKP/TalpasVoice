@@ -59,7 +59,9 @@ export async function generateExcel(entries: WorkEntry[]): Promise<Buffer> {
       kontakt: entry.kontakt || "",
       vrsta_prijave: entry.vrsta_prijave || "",
       datum: entry.datum || "",
-      stevilo_ur: entry.stevilo_ur ?? "",
+      stevilo_ur: entry.stevilo_ur != null
+        ? Number(String(entry.stevilo_ur).replace(/,/g, "").trim()) || ""
+        : "",
       obisk: entry.obisk || "",
       dostop_osebni_podatki: entry.dostop_osebni_podatki || "",
       podroben_opis: entry.podroben_opis || "",
@@ -71,9 +73,9 @@ export async function generateExcel(entries: WorkEntry[]): Promise<Buffer> {
     row.alignment = { vertical: "middle" };
     row.height = 18;
 
-    // Format stevilo_ur (column F = 6)
+    // Format stevilo_ur (column F = 6) always as number
     const urCell = row.getCell(6);
-    if (typeof entry.stevilo_ur === "number") {
+    if (urCell.value !== "") {
       urCell.numFmt = "0.##";
     }
   }
