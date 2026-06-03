@@ -89,9 +89,7 @@ ${text}`;
 
   // Post-process entries: clean stevilo_ur
   const entries = parsed.map((entry: any) => {
-    entry.stevilo_ur = parseFloat(
-      String(entry.stevilo_ur ?? 0).replace(/,$/, "").replace(",", ".")
-    );
+    entry.stevilo_ur = Number(String(entry.stevilo_ur).replace(/,/g, '.').replace(/[^0-9.]/g, ''));
     if (isNaN(entry.stevilo_ur)) entry.stevilo_ur = 0;
     return entry;
   });
