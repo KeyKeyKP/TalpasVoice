@@ -1,19 +1,43 @@
 import ExcelJS from "exceljs";
 import { WorkEntry } from "./claudeService";
 
+const TOTAL_COLS = 12;
+const DATA_ROWS_EXTRA = 50; // extra blank rows with dropdowns
+
+function applyDropdown(
+  sheet: ExcelJS.Worksheet,
+  colLetter: string,
+  startRow: number,
+  endRow: number,
+  options: string
+) {
+  for (let r = startRow; r <= endRow; r++) {
+    sheet.getCell(`${colLetter}${r}`).dataValidation = {
+      type: "list",
+      allowBlank: true,
+      formulae: [`"${options}"`],
+    };
+  }
+}
+
 export async function generateExcel(entries: WorkEntry[]): Promise<Buffer> {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("delo");
 
-  // Define columns matching exact specification
+  // Column order: A-L
   sheet.columns = [
+    { header: "Opis dela", key: "opis_dela", width: 30 },
     { header: "STRANKA", key: "stranka", width: 35 },
-    { header: "Delo", key: "delo", width: 30 },
+    { header: "Kontaktna oseba", key: "kontakt", width: 25 },
+    { header: "Vrsta prijave", key: "vrsta_prijave", width: 20 },
     { header: "Datum", key: "datum", width: 15 },
-    { header: "Kontakt", key: "kontakt", width: 25 },
-    { header: "Število ur", key: "stevilo_ur", width: 12 },
-    { header: "Opis", key: "opis", width: 40 },
+    { header: "Čas dela", key: "stevilo_ur", width: 12 },
+    { header: "Obisk", key: "obisk", width: 10 },
+    { header: "Dostop osebni podatki", key: "dostop_osebni_podatki", width: 22 },
+    { header: "Podroben opis", key: "podroben_opis", width: 45 },
     { header: "Opravil", key: "opravil", width: 25 },
+    { header: "Vrsta elementa", key: "vrsta_elementa", width: 18 },
+    { header: "Pot", key: "pot", width: 15 },
   ];
 
   // Style header row
@@ -30,30 +54,34 @@ export async function generateExcel(entries: WorkEntry[]): Promise<Buffer> {
   // Add data rows
   for (const entry of entries) {
     const row = sheet.addRow({
+      opis_dela: entry.opis_dela || "",
       stranka: entry.stranka || "",
-      delo: entry.delo || "",
-      datum: entry.datum || "",
       kontakt: entry.kontakt || "",
+      vrsta_prijave: entry.vrsta_prijave || "",
+      datum: entry.datum || "",
       stevilo_ur: entry.stevilo_ur ?? "",
-      opis: entry.opis || "",
+      obisk: entry.obisk || "",
+      dostop_osebni_podatki: entry.dostop_osebni_podatki || "",
+      podroben_opis: entry.podroben_opis || "",
       opravil: entry.opravil || "",
+      vrsta_elementa: entry.vrsta_elementa || "",
+      pot: entry.pot || "",
     });
 
-    // Style data rows
     row.alignment = { vertical: "middle" };
     row.height = 18;
 
-    // Format number column
-    const urCell = row.getCell(5);
+    // Format stevilo_ur (column F = 6)
+    const urCell = row.getCell(6);
     if (typeof entry.stevilo_ur === "number") {
       urCell.numFmt = "0.##";
     }
   }
 
-  // Add borders to all cells
-  const lastRow = sheet.rowCount;
-  for (let r = 1; r <= lastRow; r++) {
-    for (let c = 1; c <= 7; c++) {
+  // Add borders to data rows
+  const lastDataRow = sheet.rowCount;
+  for (let r = 1; r <= lastDataRow; r++) {
+    for (let c = 1; c <= TOTAL_COLS; c++) {
       const cell = sheet.getCell(r, c);
       cell.border = {
         top: { style: "thin" },
@@ -63,6 +91,14 @@ export async function generateExcel(entries: WorkEntry[]): Promise<Buffer> {
       };
     }
   }
+
+  // Add dropdown validation for data rows + 50 extra blank rows
+  const firstDataRow = 2;
+  const lastDropdownRow = lastDataRow + DATA_ROWS_EXTRA;
+
+  applyDropdown(sheet, "D", firstDataRow, lastDropdownRow, "elektronska pošta,telefon,osebno,drugo");
+  applyDropdown(sheet, "G", firstDataRow, lastDropdownRow, "da,ne");
+  applyDropdown(sheet, "H", firstDataRow, lastDropdownRow, "da,ne");
 
   // Freeze header row
   sheet.views = [{ state: "frozen", xSplit: 0, ySplit: 1 }];

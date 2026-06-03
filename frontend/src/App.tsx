@@ -109,11 +109,11 @@ export default function App() {
   const handleExport = async () => {
     // Validate required fields
     const invalid = entries.filter(
-      (e) => !e.stranka || !e.delo || !e.datum || !e.opravil || e.stevilo_ur === null
+      (e) => !e.stranka || !e.opis_dela || !e.datum || !e.opravil || e.stevilo_ur === null
     );
     if (invalid.length > 0) {
       toast.error(
-        `${invalid.length} vnos${invalid.length === 1 ? " ima" : "i imajo"} nepopolne obvezne podatke (STRANKA, Delo, Datum, Število ur, Opravil)`
+        `${invalid.length} vnos${invalid.length === 1 ? " ima" : "i imajo"} nepopolne obvezne podatke (STRANKA, Opis dela, Datum, Število ur, Opravil)`
       );
       return;
     }

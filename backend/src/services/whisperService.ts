@@ -2,7 +2,11 @@ import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let openai: OpenAI;
+function getOpenAI() {
+  if (!openai) openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || "missing" });
+  return openai;
+}
 
 export async function transcribeAudio(filePath: string): Promise<string> {
   const fileStream = fs.createReadStream(filePath);
@@ -18,7 +22,8 @@ export async function transcribeAudio(filePath: string): Promise<string> {
     ".flac": "audio/flac",
   };
 
-  const response = await openai.audio.transcriptions.create({
+  if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY ni nastavljen v .env");
+  const response = await getOpenAI().audio.transcriptions.create({
     file: fileStream,
     model: "whisper-1",
     language: "sl",
